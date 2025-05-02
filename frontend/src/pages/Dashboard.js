@@ -1,18 +1,19 @@
 import React from "react";
 
+import Sidebar from "../components/Sidebar";
+import { Outlet } from "react-router-dom";
+
 const Dashboard = () => {
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-center mt-10">Dashboard</h1>
-      <div className="flex justify-center mt-5">
-        <p className="text-lg">Welcome to your dashboard!</p>
+    <>
+      {/* <Header /> */}
+      <div className="flex">
+        <Sidebar />
+        <main className="flex-1 p-6 bg-gray-100 ">
+          <Outlet />
+        </main>
       </div>
-      <div className="flex justify-center mt-5">
-        <p className="text-lg">
-          Here you can manage your transactions and budgets.
-        </p>
-      </div>
-    </div>
+    </>
   );
 };
 

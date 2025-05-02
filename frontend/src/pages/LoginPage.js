@@ -6,17 +6,21 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
+import { useDispatch } from "react-redux";
+import { setIsAuthenticated } from "../redux/userSlice";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleLoginAction = async () => {
     const response = await getLoginUser({ email, password });
     console.log(response);
     if (response.status === 200) {
       localStorage.setItem("isAuthenticated", response.data.token);
+      dispatch(setIsAuthenticated(true));
       navigate("/dashborad");
     } else {
       alert("Invalid credentials");
