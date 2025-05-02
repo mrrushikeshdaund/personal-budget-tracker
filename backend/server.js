@@ -9,6 +9,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/user", require("./routes/user.route"));
+app.use("/api/budget", require("./routes/budget.route"));
+app.use("/api/transaction", require("./routes/transcation.route"));
 
 mongoose
   .connect(process.env.MONGO_URI)

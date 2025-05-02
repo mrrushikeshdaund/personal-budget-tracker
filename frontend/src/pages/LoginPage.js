@@ -17,7 +17,7 @@ const LoginPage = () => {
     console.log(response);
     if (response.status === 200) {
       localStorage.setItem("isAuthenticated", response.data.token);
-      navigate("/dashboard");
+      navigate("/dashborad");
     } else {
       alert("Invalid credentials");
     }
