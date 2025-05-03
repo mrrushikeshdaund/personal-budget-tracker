@@ -3,16 +3,16 @@ import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import LoginPage from "./pages/LoginPage";
-import AddTransaction from "./pages/AddTransaction";
-import Budgets from "./pages/Budgets";
 import Transactions from "./pages/Transactions";
 import RegisterPage from "./pages/RegisterPage";
 import { useDispatch, useSelector } from "react-redux";
-import { setIsAuthenticated } from "./redux/userSlice";
+import { setCurrentUserData, setIsAuthenticated } from "./redux/userSlice";
 import CharSection from "./components/CharSection";
+import TransactionOverview from "./pages/TransactionOverview";
+import BudgetsManagements from "./pages/BudgetsManagements";
 
 function App() {
-  const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
+  const isAuthenticated = useSelector((state) => state.user);
   const token = localStorage.getItem("isAuthenticated");
   const dispatch = useDispatch();
 
@@ -31,18 +31,24 @@ function App() {
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/dashborad" element={isAuthenticated && <Dashboard />}>
+        <Route
+          path="/dashborad/:userId"
+          element={isAuthenticated && <Dashboard />}
+        >
           <Route path="overview" element={<CharSection />} />
+          <Route
+            path="transactionOverview"
+            element={isAuthenticated && <TransactionOverview />}
+          />
+          <Route
+            path="transactionsManagements"
+            element={isAuthenticated && <Transactions />}
+          />
+          <Route
+            path="budgetsManagements"
+            element={isAuthenticated && <BudgetsManagements />}
+          />
         </Route>
-        <Route
-          path="/addTransaction"
-          element={isAuthenticated && <AddTransaction />}
-        />
-        <Route path="/budgets" element={isAuthenticated && <Budgets />} />
-        <Route
-          path="/transactions"
-          element={isAuthenticated && <Transactions />}
-        />
       </Routes>
     </Router>
   );

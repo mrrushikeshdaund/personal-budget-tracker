@@ -7,7 +7,7 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 import { useDispatch } from "react-redux";
-import { setIsAuthenticated } from "../redux/userSlice";
+import { setCurrentUserData, setIsAuthenticated } from "../redux/userSlice";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -17,14 +17,22 @@ const LoginPage = () => {
 
   const handleLoginAction = async () => {
     const response = await getLoginUser({ email, password });
-    console.log(response);
-    if (response.status === 200) {
-      localStorage.setItem("isAuthenticated", response.data.token);
-      dispatch(setIsAuthenticated(true));
-      navigate("/dashborad");
-    } else {
-      alert("Invalid credentials");
-    }
+    dispatch(setCurrentUserData(response.data.data));
+    const promise = new Promise((resolve, reject) => {
+      if (response.status === 200) {
+        localStorage.setItem("isAuthenticated", response.data.token);
+        dispatch(setIsAuthenticated(true));
+        resolve();
+      } else {
+        reject();
+      }
+    });
+    promise.then(() => {
+      navigate(`dashborad/${response.data.data._id}/overview`);
+    });
+    promise.catch(() => {
+      alert("invalid login details");
+    });
   };
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">

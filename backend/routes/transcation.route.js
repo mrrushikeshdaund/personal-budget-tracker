@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const transactionModel = require("../models/transcation.model");
 
-router.post("/", async (req, res) => {
+router.post("/list", async (req, res) => {
   try {
     const { userId } = req.body;
     const transactions = await transactionModel.find({ userId });
