@@ -71,22 +71,19 @@ router.put("/update", async (req, res) => {
   }
 });
 
-router.post("/delete", async (req, res) => {
+router.delete("/delete", async (req, res) => {
   try {
-    const { transactionId } = req.body;
+    const { transactionId } = req.query;
     if (!transactionId) {
       return res.status(400).json({ message: "Transaction ID is required" });
     }
     // Find the transaction to delete
-    const transaction = await transactionModel.findById(transactionId);
-    if (!transaction) {
-      return res.status(404).json({ message: "Transaction not found" });
-    }
-    // Delete the transaction
-    await transaction.remove();
-    // Return a success message
+    const deletedTransaction = await transactionModel.findByIdAndDelete(
+      transactionId
+    );
     res.status(200).json({
       message: "Transaction deleted successfully",
+      data: deletedTransaction,
     });
   } catch (error) {
     res.status(400).json({ message: "Error deleting transaction", error });

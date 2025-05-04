@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { Card } from "@mui/material";
 import { useSelector } from "react-redux";
-import { createTransaction, getAllTransaction } from "../api";
+import {
+  createTransaction,
+  deleteTransaction,
+  getAllTransaction,
+  updateTransaction,
+} from "../api";
 import { useParams } from "react-router-dom";
 
 const Transactions = () => {
   const [transactions, setTransactions] = useState([]);
   const { userId } = useParams();
+  const [deleteBtn, setDeleteBtn] = useState(false);
   const { currentUserData } = useSelector((state) => state.user);
   const [form, setForm] = useState({
-    id: null,
+    _id: null,
     category: "",
     amount: "",
     type: "income",
@@ -21,7 +27,7 @@ const Transactions = () => {
 
   useEffect(() => {
     getAllTransactions();
-  }, []);
+  }, [form]);
 
   const getAllTransactions = async () => {
     const transactionRecords = await getAllTransaction({ userId });
@@ -41,29 +47,45 @@ const Transactions = () => {
     };
     console.log(currentUserData);
     e.preventDefault();
-    const createTrans = await createTransaction(transObj);
-    if (form.id !== null) {
+
+    if (form._id !== null) {
       // Edit
-      setTransactions(transactions.map((t) => (t.id === form.id ? form : t)));
+      const updatedObj = {
+        transactionId: form._id,
+        amount: form.amount,
+        category: form.category,
+        type: form.type,
+        date: Date.now(),
+        description: form.description,
+      };
+      const updatedTransaction = await updateTransaction(updatedObj);
+      console.log(updatedTransaction);
     } else {
       // Add
-      setTransactions([
-        ...transactions,
-        { ...form, date: Date.now(), id: currentUserData._id },
-      ]);
+      const createTrans = await createTransaction(transObj);
+      // setTransactions([...transactions, createTrans.data.data]);
     }
     setForm({
-      id: null,
+      _id: null,
       category: "",
       amount: "",
       description: "",
       type: "income",
     });
+    setDeleteBtn(false);
   };
 
-  const handleEdit = (tx) => setForm(tx);
-  const handleDelete = (id) =>
-    setTransactions(transactions.filter((t) => t.id !== id));
+  const handleEdit = (tx) => {
+    setForm(tx);
+    setDeleteBtn(true);
+  };
+
+  const handleDelete = async (id) => {
+    const transactionId = id;
+    console.log(id);
+    const deleteTransactionRecord = await deleteTransaction(transactionId);
+    setTransactions(transactions.filter((t) => t._id !== id));
+  };
 
   return (
     <div>
@@ -112,55 +134,61 @@ const Transactions = () => {
             type="submit"
             className="md:col-span-4 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded transition"
           >
-            {form.id !== null ? "Update Transaction" : "Add Transaction"}
+            {form._id !== null ? "Update Transaction" : "Add Transaction"}
           </button>
         </form>
-
-        <table className="w-full border border-gray-200 text-left">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="py-2 px-3 border">Category</th>
-              <th className="py-2 px-3 border">Description</th>
-              <th className="py-2 px-3 border">Amount</th>
-              <th className="py-2 px-3 border">Type</th>
-              <th className="py-2 px-3 border">Date</th>
-              <th className="py-2 px-3 border">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {transactions.length === 0 ? (
+        <div className="h-[50vh] overflow-auto">
+          <table className="w-full border border-gray-200 text-left">
+            <thead className="bg-gray-100">
               <tr>
-                <td colSpan="4" className="text-center py-4">
-                  No transactions found
-                </td>
+                <th className="py-2 px-3 border">Category</th>
+                <th className="py-2 px-3 border">Description</th>
+                <th className="py-2 px-3 border">Amount</th>
+                <th className="py-2 px-3 border">Type</th>
+                <th className="py-2 px-3 border">Date</th>
+                <th className="py-2 px-3 border">Actions</th>
               </tr>
-            ) : (
-              transactions.map((tx) => (
-                <tr key={tx._id} className="hover:bg-gray-50">
-                  <td className="py-2 px-3 border">{tx.category}</td>
-                  <td className="py-2 px-3 border">{tx.description}</td>
-                  <td className="py-2 px-3 border">₹{tx.amount}</td>
-                  <td className="py-2 px-3 border capitalize">{tx.type}</td>
-                  <td className="py-2 px-3 border">{tx.date}</td>
-                  <td className="py-2 px-3 border space-x-2">
-                    <button
-                      onClick={() => handleEdit(tx)}
-                      className="bg-yellow-400 hover:bg-yellow-500 text-white px-2 py-1 rounded"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(tx.id)}
-                      className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded"
-                    >
-                      Delete
-                    </button>
+            </thead>
+            <tbody>
+              {transactions.length === 0 ? (
+                <tr>
+                  <td colSpan="4" className="text-center py-4">
+                    No transactions found
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                transactions.map((tx) => (
+                  <tr key={tx._id} className="hover:bg-gray-50 ">
+                    <td className="py-2 px-3 border">{tx.category}</td>
+                    <td className="py-2 px-3 border">{tx.description}</td>
+                    <td className="py-2 px-3 border">₹{tx.amount}</td>
+                    <td className="py-2 px-3 border capitalize">{tx.type}</td>
+                    <td className="py-2 px-3 border">{tx.date}</td>
+                    <td className="py-2 px-3 border space-x-2">
+                      <button
+                        onClick={() => handleEdit(tx)}
+                        className="bg-yellow-400 hover:bg-yellow-500 text-white px-2 py-1 rounded"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(tx._id)}
+                        className={`${
+                          deleteBtn
+                            ? "bg-grey-500 text-white px-2 py-1 rounded"
+                            : "bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded"
+                        } `}
+                        disabled={deleteBtn}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </Card>
     </div>
   );
