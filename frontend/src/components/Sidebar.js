@@ -25,6 +25,11 @@ const Sidebar = () => {
     dispatch(setCurrentUserData(currentUser.data.data));
   };
 
+  const logoutUser = async () => {
+    await localStorage.removeItem("isAuthenticated");
+    navigate("/");
+  };
+
   const handleTransactionOverview = () => {
     navigate(`/dashborad/${userId}/transactionOverview`);
     setActiveTab("transactionOverview");
@@ -69,7 +74,7 @@ const Sidebar = () => {
         <IconButton size="large">
           <NotificationsNoneOutlinedIcon className=" text-white" />
         </IconButton>
-        <IconButton size="large">
+        <IconButton size="large" onClick={logoutUser}>
           <LogoutOutlinedIcon className=" text-white" />
         </IconButton>
       </div>

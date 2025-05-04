@@ -31,7 +31,6 @@ const Transactions = () => {
 
   const getAllTransactions = async () => {
     const transactionRecords = await getAllTransaction({ userId });
-    console.log(transactionRecords.data);
     setTransactions(transactionRecords.data.data);
   };
 
@@ -139,7 +138,7 @@ const Transactions = () => {
         </form>
         <div className="h-[50vh] overflow-auto">
           <table className="w-full border border-gray-200 text-left">
-            <thead className="bg-gray-100">
+            <thead className="bg-gray-100 ">
               <tr>
                 <th className="py-2 px-3 border">Category</th>
                 <th className="py-2 px-3 border">Description</th>

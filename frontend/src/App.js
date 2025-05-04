@@ -1,6 +1,11 @@
 import "./App.css";
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import LoginPage from "./pages/LoginPage";
 import Transactions from "./pages/Transactions";
@@ -33,20 +38,20 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route
           path="/dashborad/:userId"
-          element={isAuthenticated && <Dashboard />}
+          element={token ? <Dashboard /> : <Navigate to={"/"} />}
         >
           <Route path="overview" element={<CharSection />} />
           <Route
             path="transactionOverview"
-            element={isAuthenticated && <TransactionOverview />}
+            element={token ? <TransactionOverview /> : <Navigate to={"/"} />}
           />
           <Route
             path="transactionsManagements"
-            element={isAuthenticated && <Transactions />}
+            element={token ? <Transactions /> : <Navigate to={"/"} />}
           />
           <Route
             path="budgetsManagements"
-            element={isAuthenticated && <BudgetsManagements />}
+            element={token ? <BudgetsManagements /> : <Navigate to={"/"} />}
           />
         </Route>
       </Routes>
