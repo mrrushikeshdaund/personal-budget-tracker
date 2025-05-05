@@ -90,21 +90,21 @@ const Sidebar = () => {
       </div>
       <div
         style={{ cursor: "pointer" }}
-        onClick={handleBudgetsManagement}
-        className={
-          activeTab === "budgetsManagements" ? "font-bold text-yellow-300" : ""
-        }
-      >
-        Budgets Management
-      </div>
-      <div
-        style={{ cursor: "pointer" }}
         onClick={handleTransactionOverview}
         className={
           activeTab === "transactionOverview" ? "font-bold text-yellow-300" : ""
         }
       >
         Transactions Overview
+      </div>
+      <div
+        style={{ cursor: "pointer" }}
+        onClick={handleBudgetsManagement}
+        className={
+          activeTab === "budgetsManagements" ? "font-bold text-yellow-300" : ""
+        }
+      >
+        Budgets Management
       </div>
       <div
         style={{ cursor: "pointer" }}

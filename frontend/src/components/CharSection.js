@@ -1,10 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import BudgetChart from "./BudgetChart";
 import CategoryPieChart from "./CategoryPieChart";
 import { Card } from "@mui/material";
 import BudgetOverview from "./BudgetOverview";
+import { useParams } from "react-router-dom";
+import { getAllTransaction } from "../api";
 
 const CharSection = () => {
+  const [pieChartData, setPieChartData] = useState([]);
+  const { userId } = useParams();
+
+  useEffect(() => {
+    getAllTransactionData();
+  }, [userId]);
+
+  const getAllTransactionData = async () => {
+    const allTX = await getAllTransaction({ userId });
+    console.log("chart ", allTX.data.data);
+    setPieChartData(
+      allTX.data.data.map(({ category, amount }) => ({ category, amount }))
+    );
+  };
   return (
     <div className="flex flex-col gap-5  bg-gray-100">
       <BudgetOverview />
@@ -15,14 +31,7 @@ const CharSection = () => {
         </Card>
         <Card className="w-1/2 p-4 shadow-lg">
           <h2 className="text-xl font-bold mb-4">Category Pie Chart</h2>
-          <CategoryPieChart
-            expenses={[
-              { category: "Groceries", amount: 5000 },
-              { category: "Rent", amount: 12000 },
-              { category: "Utilities", amount: 2500 },
-              { category: "Entertainment", amount: 3000 },
-            ]}
-          />
+          <CategoryPieChart expenses={pieChartData} />
         </Card>
       </div>
     </div>

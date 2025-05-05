@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const budgetModel = require("../models/budget.model");
 
-router.post("/", async (req, res) => {
+router.post("/list", async (req, res) => {
   try {
     const { userId } = req.body;
     const budgets = await budgetModel.find({ userId });
@@ -50,10 +50,9 @@ router.post("/create", async (req, res) => {
 // Update an existing budget
 router.put("/update", async (req, res) => {
   try {
-    const { userId, month, year, amount } = req.body;
-    const budgetRecord = await budgetModel.findOne({ userId });
+    const { userId, _id, amount } = req.body;
     // Find the budget to update
-    const budget = await budgetModel.findOne({ userId, month, year });
+    const budget = await budgetModel.findOne({ _id, userId });
     if (!budget) {
       return res.status(404).json({ message: "Budget not found" });
     }
@@ -62,6 +61,18 @@ router.put("/update", async (req, res) => {
     await budget.save();
     // Return the updated budget
     res.status(200).json({ message: "Budget updated successfully", budget });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.delete("/delete", async (req, res) => {
+  try {
+    const { _id } = req.query;
+    if (!_id) return res.status(400).json({ message: "Budget ID is required" });
+    await budgetModel.findByIdAndDelete(_id);
+    res.status(200).json({ message: "Budget deleted" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });
