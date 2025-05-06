@@ -5,9 +5,12 @@ import { Card } from "@mui/material";
 import BudgetOverview from "./BudgetOverview";
 import { useParams } from "react-router-dom";
 import { getAllTransaction } from "../api";
+import { useSelector } from "react-redux";
 
 const CharSection = () => {
   const [pieChartData, setPieChartData] = useState([]);
+  const { totalBudget } = useSelector((state) => state.budget);
+  const { totalExpense } = useSelector((state) => state.transaction);
   const { userId } = useParams();
 
   useEffect(() => {
@@ -27,7 +30,7 @@ const CharSection = () => {
       <div className="flex gap-4">
         <Card className="w-1/2 p-4 shadow-lg">
           <h2 className="text-xl font-bold mb-4">Budget Chart</h2>
-          <BudgetChart budget={30000} expenses={24500} />
+          <BudgetChart budget={totalBudget} expenses={totalExpense} />
         </Card>
         <Card className="w-1/2 p-4 shadow-lg">
           <h2 className="text-xl font-bold mb-4">Category Pie Chart</h2>

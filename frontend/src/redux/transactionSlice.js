@@ -2,20 +2,18 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   transactionData: [],
+  totalExpense: 0,
 };
 
 const transactionSlice = createSlice({
   name: "transaction",
   initialState,
   reducers: {
-    setIsAuthenticated: (state, action) => {
-      state.isAuthenticated = action.payload;
+    setTransactionData: (state, action) => {
+      state.transactionData = action.payload;
     },
-    setCurrentUserData: (state, action) => {
-      state.currentUserData = action.payload;
-    },
-    setOpen: (state, action) => {
-      state.open = action.payload;
+    setTotalExpense: (state, action) => {
+      state.totalExpense = action.payload;
     },
   },
 });
@@ -24,5 +22,4 @@ const transactionSlice = createSlice({
 export default transactionSlice.reducer;
 
 // Named export for actions
-export const { setIsAuthenticated, setCurrentUserData, setOpen } =
-  transactionSlice.actions;
+export const { setTransactionData, setTotalExpense } = transactionSlice.actions;

@@ -17,11 +17,12 @@ const BudgetsManagements = () => {
   const [form, setForm] = useState({
     _id: null,
     month: 0,
-    year: 2000,
+    year: 0,
     amount: 0,
   });
 
   const months_list = [
+    "Select Month",
     "January",
     "February",
     "March",

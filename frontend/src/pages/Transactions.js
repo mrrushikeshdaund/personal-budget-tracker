@@ -162,7 +162,9 @@ const Transactions = () => {
                     <td className="py-2 px-3 border">{tx.description}</td>
                     <td className="py-2 px-3 border">₹{tx.amount}</td>
                     <td className="py-2 px-3 border capitalize">{tx.type}</td>
-                    <td className="py-2 px-3 border">{tx.date}</td>
+                    <td className="py-2 px-3 border">
+                      {tx.date.toLocaleString()}
+                    </td>
                     <td className="py-2 px-3 border space-x-2">
                       <button
                         onClick={() => handleEdit(tx)}

@@ -4,6 +4,7 @@ const initialState = {
   isAuthenticated: false,
   currentUserData: {},
   open: false,
+  selectedMonth: 1,
 };
 
 const userSlice = createSlice({
@@ -19,6 +20,9 @@ const userSlice = createSlice({
     setOpen: (state, action) => {
       state.open = action.payload;
     },
+    setSelectedMonth: (state, action) => {
+      state.selectedMonth = action.payload;
+    },
   },
 });
 
@@ -26,5 +30,9 @@ const userSlice = createSlice({
 export default userSlice.reducer;
 
 // Named export for actions
-export const { setIsAuthenticated, setCurrentUserData, setOpen } =
-  userSlice.actions;
+export const {
+  setIsAuthenticated,
+  setCurrentUserData,
+  setOpen,
+  setSelectedMonth,
+} = userSlice.actions;

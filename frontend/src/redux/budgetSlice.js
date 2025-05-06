@@ -1,23 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  isAuthenticated: false,
-  currentUserData: {},
-  open: false,
+  budgetsData: [],
+  totalBudget: 0,
 };
 
 const budgetSlice = createSlice({
-  name: "user",
+  name: "budget",
   initialState,
   reducers: {
-    setIsAuthenticated: (state, action) => {
-      state.isAuthenticated = action.payload;
+    setBudgetsData: (state, action) => {
+      state.budgetsData = action.payload;
     },
-    setCurrentUserData: (state, action) => {
-      state.currentUserData = action.payload;
-    },
-    setOpen: (state, action) => {
-      state.open = action.payload;
+    setTotalBudget: (state, action) => {
+      state.totalBudget = action.payload;
     },
   },
 });
@@ -26,5 +22,4 @@ const budgetSlice = createSlice({
 export default budgetSlice.reducer;
 
 // Named export for actions
-export const { setIsAuthenticated, setCurrentUserData, setOpen } =
-  budgetSlice.actions;
+export const { setBudgetsData, setTotalBudget } = budgetSlice.actions;
