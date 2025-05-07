@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Card } from "@mui/material";
 import {
   createBudget,
@@ -8,11 +8,13 @@ import {
   getAllBudgetRecords,
   updateBudgetRecord,
 } from "../api";
+import { setAlertMessage, setAlertOpen, setSeverity } from "../redux/userSlice";
 
 const BudgetsManagements = () => {
   const [budgets, setBudgets] = useState([]);
   const { userId } = useParams();
   const [deleteBtn, setDeleteBtn] = useState(false);
+  const dispatch = useDispatch();
   const { currentUserData } = useSelector((state) => state.user);
   const [form, setForm] = useState({
     _id: null,
@@ -67,12 +69,30 @@ const BudgetsManagements = () => {
           userId: userId,
           amount: Number(form.amount),
         };
-        await updateBudgetRecord(updateBudget);
+        const response = await updateBudgetRecord(updateBudget);
+        if (response.status === 200) {
+          dispatch(setAlertOpen(true));
+          dispatch(setSeverity("success"));
+          dispatch(setAlertMessage(response.data.message));
+        } else {
+          dispatch(setAlertOpen(true));
+          dispatch(setSeverity("error"));
+          dispatch(setAlertMessage(response.data.message));
+        }
         setDeleteBtn(false);
       } else {
         // Create new budget
-        await createBudget(newBudget);
+        const newBudgetItem = await createBudget(newBudget);
         console.log("New budget created:", newBudget);
+        if (newBudgetItem.status === 200) {
+          dispatch(setAlertOpen(true));
+          dispatch(setSeverity("success"));
+          dispatch(setAlertMessage(newBudgetItem.data.message));
+        } else {
+          dispatch(setAlertOpen(true));
+          dispatch(setSeverity("error"));
+          dispatch(setAlertMessage(newBudgetItem.data.message));
+        }
       }
 
       // Refresh list
@@ -96,8 +116,17 @@ const BudgetsManagements = () => {
   };
 
   const handleDelete = async (BId) => {
-    await deleteBudgetRecord(BId);
+    const deletedBudget = await deleteBudgetRecord(BId);
     setBudgets(budgets.filter((row) => row._id !== BId));
+    if (deletedBudget.status === 200) {
+      dispatch(setAlertOpen(true));
+      dispatch(setSeverity("success"));
+      dispatch(setAlertMessage(deletedBudget.data.message));
+    } else {
+      dispatch(setAlertOpen(true));
+      dispatch(setSeverity("error"));
+      dispatch(setAlertMessage(deletedBudget.data.message));
+    }
   };
 
   return (

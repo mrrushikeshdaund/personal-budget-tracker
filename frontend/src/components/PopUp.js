@@ -9,7 +9,12 @@ import {
   MenuItem,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { setOpen } from "../redux/userSlice";
+import {
+  setAlertMessage,
+  setAlertOpen,
+  setOpen,
+  setSeverity,
+} from "../redux/userSlice";
 import { updateTransaction } from "../api";
 
 const types = ["income", "expense"];
@@ -55,6 +60,14 @@ const PopUp = ({ data }) => {
     console.log(updatedTX);
     if (updatedTX.status === 200) {
       dispatch(setOpen(false));
+      dispatch(setAlertOpen(true));
+      dispatch(setSeverity("success"));
+      dispatch(setAlertMessage(updatedTX.data.message));
+    } else {
+      dispatch(setOpen(false));
+      dispatch(setAlertOpen(true));
+      dispatch(setSeverity("error"));
+      dispatch(setAlertMessage(updatedTX.data.message));
     }
   };
 

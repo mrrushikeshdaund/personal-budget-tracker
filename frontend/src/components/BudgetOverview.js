@@ -41,7 +41,7 @@ const BudgetOverview = () => {
       calculateData();
     }
     setTotalRemaingBudget(totalBudget - totalExpense);
-  }, [transactionData, budgetsData]);
+  }, [transactionData, budgetsData, totalBudget, totalExpense]);
 
   const calculateData = async () => {
     const sumList = transactionData

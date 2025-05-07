@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Card } from "@mui/material";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   createTransaction,
   deleteTransaction,
@@ -8,10 +8,13 @@ import {
   updateTransaction,
 } from "../api";
 import { useParams } from "react-router-dom";
+import { setAlertMessage, setAlertOpen, setSeverity } from "../redux/userSlice";
 
 const Transactions = () => {
   const [transactions, setTransactions] = useState([]);
   const { userId } = useParams();
+  const dispatch = useDispatch();
+
   const [deleteBtn, setDeleteBtn] = useState(false);
   const { currentUserData } = useSelector((state) => state.user);
   const [form, setForm] = useState({
@@ -58,11 +61,22 @@ const Transactions = () => {
         description: form.description,
       };
       const updatedTransaction = await updateTransaction(updatedObj);
-      console.log(updatedTransaction);
+      console.log(updatedTransaction.status);
+      dispatch(setAlertOpen(true));
+      dispatch(setSeverity("success"));
+      dispatch(setAlertMessage(updateTransaction.message));
     } else {
       // Add
       const createTrans = await createTransaction(transObj);
-      // setTransactions([...transactions, createTrans.data.data]);
+      if (createTrans.status === 200) {
+        dispatch(setAlertOpen(true));
+        dispatch(setSeverity("success"));
+        dispatch(setAlertMessage(createTrans.data.message));
+      } else {
+        dispatch(setAlertOpen(true));
+        dispatch(setSeverity("error"));
+        dispatch(setAlertMessage(createTrans.data.message));
+      }
     }
     setForm({
       _id: null,
@@ -84,6 +98,15 @@ const Transactions = () => {
     console.log(id);
     const deleteTransactionRecord = await deleteTransaction(transactionId);
     setTransactions(transactions.filter((t) => t._id !== id));
+    if (deleteTransactionRecord.status === 200) {
+      dispatch(setAlertOpen(true));
+      dispatch(setSeverity("success"));
+      dispatch(setAlertMessage(deleteTransactionRecord.data.message));
+    } else {
+      dispatch(setAlertOpen(true));
+      dispatch(setSeverity("error"));
+      dispatch(setAlertMessage(deleteTransactionRecord.data.message));
+    }
   };
 
   return (

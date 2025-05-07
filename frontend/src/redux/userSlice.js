@@ -5,6 +5,9 @@ const initialState = {
   currentUserData: {},
   open: false,
   selectedMonth: 1,
+  alertOpen: false,
+  severity: "success",
+  alertMessage: "",
 };
 
 const userSlice = createSlice({
@@ -23,6 +26,15 @@ const userSlice = createSlice({
     setSelectedMonth: (state, action) => {
       state.selectedMonth = action.payload;
     },
+    setAlertOpen: (state, action) => {
+      state.alertOpen = action.payload;
+    },
+    setSeverity: (state, action) => {
+      state.severity = action.payload;
+    },
+    setAlertMessage: (state, action) => {
+      state.alertMessage = action.payload;
+    },
   },
 });
 
@@ -35,4 +47,7 @@ export const {
   setCurrentUserData,
   setOpen,
   setSelectedMonth,
+  setAlertOpen,
+  setSeverity,
+  setAlertMessage,
 } = userSlice.actions;
